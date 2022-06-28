@@ -11,11 +11,6 @@
   when:
     - docker_compose_vsn.stdout is defined
 
-- name: Set version-specific URL variables
-  set_fact:
-    docker_compose_linux_casing: "{{ (docker_compose_version is version('2', '<')) | ternary('Linux', 'linux') }}"
-    docker_compose_version_prefix: "{{ (docker_compose_version is version('2', '<')) | ternary('', 'v') }}"
-
 - name: Set architecture
   set_fact:
     docker_compose_arch: "{{ (ansible_architecture == 'armv7l') | ternary('armv7', ansible_architecture) }}"
@@ -36,4 +31,4 @@
   when: >
     (docker_compose_current_version is not defined)
     or (docker_compose_current_version|length == 0)
-    or (docker_compose_current_version is version(docker_compose_version, '<'))
+    or (docker_compose_current_version is version(docker_compose_version | replace('v', ''), '<'))
